@@ -70,12 +70,16 @@ public class ContentSizeFitterWithLimit : ContentSizeFitter
     protected override void Awake()
     {
         base.Awake();
-        rect = GetComponent<RectTransform>();
+        OnValidate();
     }
 
     protected override void OnValidate()
     {
         base.OnValidate();
+
+        if (rect == null)
+            rect = GetComponent<RectTransform>();
+
         ForceRebuild();
     }
 
@@ -88,17 +92,20 @@ public class ContentSizeFitterWithLimit : ContentSizeFitter
     public override void SetLayoutHorizontal()
     {
         base.SetLayoutHorizontal();
-        LimitSize();
+        RefreshSize();
     }
 
     public override void SetLayoutVertical()
     {
         base.SetLayoutVertical();
-        LimitSize();
+        RefreshSize();
     }
 
-    public void LimitSize()
+    public void RefreshSize()
     {
+        if (rect == null)
+            return;
+
         if (limitWidth && rect.rect.width > maxWidth)
             RefreshWidth();
 
@@ -108,11 +115,17 @@ public class ContentSizeFitterWithLimit : ContentSizeFitter
 
     public void RefreshWidth()
     {
+        if (rect == null)
+            return;
+
         rect.sizeDelta = new Vector2(maxWidth, rect.sizeDelta.y);
     }
 
     public void RefreshHeight()
     {
+        if (rect == null)
+            return;
+
         rect.sizeDelta = new Vector2(rect.sizeDelta.x, maxHeight);
     }
 
